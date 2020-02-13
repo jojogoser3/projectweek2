@@ -4,11 +4,13 @@ class Functions
 {
 
     private $ch;
+    public $id_list;
 
     public function run(){
         $this->connect();
         $this->category();
         $this->random();
+        $this->products();
     }
 
     public function connect()
@@ -67,20 +69,29 @@ class Functions
         
         foreach ($output['data'] as $value) {
             array_push($id_list, $value['id']);
+            shuffle($id_list);    
+        }
+        foreach($id_list as $item){
+            
+            echo $item . '<br>';
         }
         
-        $random_product_id = $id_list [random_int(0, count($id_list) -1)];
-        
+    }
+    public function products(){
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "http://paulvandillen.cb04.shopworks-clients.nl/sales-channel-api/v1/product/" . $random_product_id);
+        curl_setopt($ch, CURLOPT_URL, "http://paulvandillen.cb04.shopworks-clients.nl/sales-channel-api/v1//product?filter[product.categoryTree]='$id_list");
         curl_setopt($ch, CURLOPT_HTTPHEADER, ["sw-access-key:SWSCU1G0RG4YWLRXC1VKZUVQVW"]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         
         $myApiData = curl_exec($ch);
         curl_close($ch);
         $output = json_decode($myApiData, true);
+
+        $product_list = [];
         
-        var_dump($output);
+        echo "<pre>";
+        
+
     }
 
 }
